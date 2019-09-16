@@ -9,18 +9,18 @@ cd /root/src/gemoc-studio
 
 if [ -z "$1" ]
 then
-	echo "---------- compile full gemoc studio -----------"
-	mvn -f /root/src/gemoc-studio/dev_support/full_compilation/pom.xml clean install --errors
+	echo "---------- compile full gemoc studio (clean verify) -----------"
+	mvn -f /root/src/gemoc-studio/dev_support/full_compilation/pom.xml clean verify --errors
 else
 	case $1 in
 	"full") 
-		echo "-------- compile full gemoc studio --------"
+		echo "-------- compile full gemoc studio (and install in .m2) --------"
 		mvn -f /root/src/gemoc-studio/dev_support/full_compilation/pom.xml clean install --errors ;;
 	"linux") 
-		echo "-------- compile gemoc studio for linux only in offline --------"
+		echo "-------- compile gemoc studio for linux only in online (install in .m2) --------"
 		mvn -P test_linux -f /root/src/gemoc-studio/dev_support/full_compilation/pom.xml clean install --errors ;;
 	"linux_offline") 
-		echo "-------- compile gemoc studio for linux only in offline --------"
+		echo "-------- compile gemoc studio for linux only (offline) (install in .m2) --------"
 		mvn -o -P test_linux -f /root/src/gemoc-studio/dev_support/full_compilation/pom.xml clean install --errors ;;
 	"system_test_only") 
 		echo "-------- running system tests only ------------"
@@ -31,4 +31,7 @@ else
 fi
 # set owner to default system user
 chown 1000:1000 -R /root/src/gemoc-studio
+chown 1000:1000 -R /root/src/gemoc-studio-execution-ale
+chown 1000:1000 -R /root/src/gemoc-studio-execution-moccml
+chown 1000:1000 -R /root/src/gemoc-studio-moccml
 chown 1000:1000 -R /root/src/gemoc-studio-modeldebugging
