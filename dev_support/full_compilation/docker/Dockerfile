@@ -1,9 +1,85 @@
-FROM ubuntu:xenial
-RUN apt-get update ; \
-	apt-get install -y software-properties-common python-software-properties xvfb maven graphviz libswt-gtk-3-jni libswt-gtk-3-java;\ 
-	add-apt-repository ppa:webupd8team/java ; \
-	apt-get update ; \
-	echo oracle-java7-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections && \
-	apt-get install -y oracle-java8-installer
-COPY entrypoint.sh .
-ENTRYPOINT ["bash", "./entrypoint.sh"]
+###############################################################
+# Image content overview:
+# - ubuntu 16.04
+# - graphviz
+# - openjdk8, openfx, maven 3.6.0
+# - Xvfb
+# - helper build script for gemoc
+# user id support (for correct ownership of produced files)
+# the docker file is greatly inspired from images at https://github.com/eclipse-cbi/dockerfiles
+###############################################################
+# Rationale:
+# main goal : be able to be usable both in jenkins (on jenkins.eclipse.org new infrastructure) and locally by developpers
+# version selection: 
+# - due to bug in recent version of graphviz we must stick to an older version (cf. https://forum.plantuml.net/5425/relation-long-with-graphviz-using-labels-relations-namespace)
+#   the quickest workaround was to use an older version of ubuntu that has graphviz 2.39.x
+# - use of Xvfb instead of vnc (unlike images from  https://github.com/eclipse-cbi/dockerfiles)
+#		this is because ubuntu 16 use tighvnc instead of tigervnc and tighvnc doesn't support the passwordFile option)
+# - openjdk8 + openjfx : due to recent change in oracle java distribution license
+###############################################################
+
+
+FROM ubuntu:16.04
+
+### user name recognition at runtime w/ an arbitrary uid - for OpenShift deployments
+COPY scripts/uid_entrypoint /usr/local/bin/uid_entrypoint
+RUN chmod u+x /usr/local/bin/uid_entrypoint && \
+    chgrp 0 /usr/local/bin/uid_entrypoint && \
+    chmod g=u /usr/local/bin/uid_entrypoint /etc/passwd
+ENTRYPOINT [ "uid_entrypoint" ]
+
+#ENV DEBIAN_FRONTEND noninteractive
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+	libgtk-3-0=3.18.* \
+	metacity \
+	x11-xserver-utils \
+	libgl1-mesa-dri \
+	xfonts-base \
+	xfonts-scalable \
+	xfonts-100dpi \
+	xfonts-75dpi \
+	fonts-liberation \
+	fonts-freefont-ttf \
+	fonts-dejavu \
+	fonts-dejavu-core \
+	fonts-dejavu-extra
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+	graphviz \
+	xvfb 
+
+RUN apt-get install -y  --no-install-recommends \
+	openjdk-8-jdk \
+	openjfx \
+	maven
+
+# some cleanup
+RUN rm -rf /var/lib/apt/lists/*
+
+ENV HOME=/home/ci
+
+# probably not required during image build
+RUN Xvfb :99 &
+ENV DISPLAY :99
+
+
+
+# additionnal helper build scripts
+COPY scripts/build_gemoc.sh ${HOME}/
+RUN chmod a+x ${HOME}/build_gemoc.sh
+
+
+# switch to default user
+USER 10001
+WORKDIR ${HOME}
+
+#RUN useradd -u 1000 -ms /bin/bash ci
+#RUN useradd -r -u 1000 -g ci ci
+
+ 
+
+#USER ci
+
+#ENTRYPOINT ["bash", "./entrypoint.sh"]
+
