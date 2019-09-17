@@ -57,8 +57,12 @@ RUN apt-get install -y  --no-install-recommends \
 # some cleanup
 RUN rm -rf /var/lib/apt/lists/*
 
-ENV HOME=/home/ci
+ENV HOME=/home/jenkins
 
+# avoid _XSERVTransmkdir: ERROR: euid != 0,directory /tmp/.X11-unix will not be created.
+RUN mkdir /tmp/.X11-unix && \
+	chmod 1777 /tmp/.X11-unix && \
+	chown root /tmp/.X11-unix/
 # probably not required during image build
 RUN Xvfb :99 &
 ENV DISPLAY :99

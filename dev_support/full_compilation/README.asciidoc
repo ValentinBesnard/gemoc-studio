@@ -125,7 +125,7 @@ The docker-compose command is more or less equivalent to:
 [source,bourne]
 ----
 docker build -t gemoc-full-compilation .
-docker run -v $PWD/../../../..:/root/src -v $PWD/cache-m2:/root/.m2 gemoc-full-compilation
+docker run -v $PWD/../../../..:/home/jenkins/src -v $PWD/cache-m2:/home/jenkins/.m2 gemoc-full-compilation
 ----
 
 Then you'll have to manually prune unused containers after usage.
@@ -133,6 +133,6 @@ Then you'll have to manually prune unused containers after usage.
 If for some reason you wish to access it interactively you can use the following command:
 [source,bourne]
 ----
-docker run -it -v $PWD/../../../..:/home/ci/src -v $PWD/cache-m2:/home/ci/.m2 --user 1000 dvojtise/gemoc-full-compilation:latest /bin/bash
+docker run -it -v $PWD/../../../..:/home/jenkins/src -v $PWD/cache-m2:/home/jenkins/.m2 --user 1000 dvojtise/gemoc-full-compilation:latest /bin/bash
 ----
    
