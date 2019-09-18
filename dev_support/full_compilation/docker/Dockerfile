@@ -32,6 +32,7 @@ ENTRYPOINT [ "uid_entrypoint" ]
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
 	libgtk-3-0=3.18.* \
+	language-pack-en-base \
 	metacity \
 	x11-xserver-utils \
 	libgl1-mesa-dri \
