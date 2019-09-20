@@ -77,7 +77,7 @@ docker-compose down && docker-compose up
  
 [source,bourne]
 ----
-docker build -t "dvojtise/gemoc-full-compilation:latest" .
+docker build -t "gemoc/gemoc-full-compilation:latest" .
 ---- 
 
 Changes commited in master branch are automatically built and deployed on https://cloud.docker.com/u/dvojtise/repository/docker/dvojtise/gemoc-full-compilation
@@ -87,7 +87,7 @@ Changes commited in master branch are automatically built and deployed on https:
 A standard full build is done using the command:
 [source,bourne]
 ----
-docker run -it -v $PWD/../../../..:/home/ci/src -v $PWD/cache-m2:/home/ci/.m2 --user 1000 dvojtise/gemoc-full-compilation:latest ./build_gemoc.sh
+docker run -it -v $PWD/../../../..:/home/jenkins/src -v $PWD/cache-m2:/home/jenkins/.m2 --user 1000 gemoc/gemoc-full-compilation:latest ./build_gemoc.sh
 ---- 
 
 where
@@ -107,7 +107,7 @@ docker-compose run gemoc_full_compilation system_test_only
 Or you can run a full build but including only the linux variant using:
 [source,bourne]
 ----
-docker run -it -v $PWD/../../../..:/home/ci/src -v $PWD/cache-m2:/home/ci/.m2 --user 1000 dvojtise/gemoc-full-compilation:latest ./build_gemoc.sh linux
+docker run -it -v $PWD/../../../..:/home/ci/src -v $PWD/cache-m2:/home/ci/.m2 --user 1000 gemoc/gemoc-full-compilation:latest ./build_gemoc.sh linux
 ---- 
 or
 [source,bourne]
@@ -124,8 +124,8 @@ It also mounts a *cache-m2* folder in order to speed up the compilation.
 The docker-compose command is more or less equivalent to:
 [source,bourne]
 ----
-docker build -t gemoc-full-compilation .
-docker run -v $PWD/../../../..:/home/jenkins/src -v $PWD/cache-m2:/home/jenkins/.m2 gemoc-full-compilation
+docker build -t gemoc/gemoc-full-compilation:latest .
+docker run -v $PWD/../../../..:/home/jenkins/src -v $PWD/cache-m2:/home/jenkins/.m2 gemoc/gemoc-full-compilation:latest
 ----
 
 Then you'll have to manually prune unused containers after usage.
@@ -133,6 +133,6 @@ Then you'll have to manually prune unused containers after usage.
 If for some reason you wish to access it interactively you can use the following command:
 [source,bourne]
 ----
-docker run -it -v $PWD/../../../..:/home/jenkins/src -v $PWD/cache-m2:/home/jenkins/.m2 --user 1000 dvojtise/gemoc-full-compilation:latest /bin/bash
+docker run -it -v $PWD/../../../..:/home/jenkins/src -v $PWD/cache-m2:/home/jenkins/.m2 --user 1000 gemoc/gemoc-full-compilation:latest /bin/bash
 ----
    

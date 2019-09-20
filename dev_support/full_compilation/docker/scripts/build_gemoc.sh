@@ -7,36 +7,42 @@ export DISPLAY=:99
 
 #$HOME/.vnc/xstartup.sh
 
-cd $HOME/src/gemoc-studio
+cd $HOME/src/gemoc-studio/dev_support/full_compilation/
 
 pwd
 
 if [ -z "$1" ]
 then
 	echo "---------- compile full gemoc studio (clean verify) -----------"
-	mvn -f $HOME/src/gemoc-studio/dev_support/full_compilation/pom.xml clean verify --errors  --show-version
+	mvn clean verify --errors  --show-version
 else
 	case $1 in
 	"full") 
 		echo "-------- compile full gemoc studio (and install in .m2) --------"
-		mvn -f $HOME/src/gemoc-studio/dev_support/full_compilation/pom.xml clean install --errors  --show-version;;
+		mvn clean install --errors  --show-version;;
 	"linux") 
 		echo "-------- compile gemoc studio for linux only in online (install in .m2) --------"
-		mvn -P test_linux -f $HOME/src/gemoc-studio/dev_support/full_compilation/pom.xml clean install --errors  --show-version;;
+		mvn -P test_linux clean install --errors  --show-version;;
+	"linux_no_system_test") 
+		echo "-------- compile gemoc studio for linux only no system tests, online, install in .m2 --------"
+		mvn -P test_linux \ 
+            --projects !../../gemoc_studio/tests/org.eclipse.gemoc.studio.tests.system.lwb,!../../gemoc_studio/tests/org.eclipse.gemoc.studio.tests.system.mwb \
+            clean install --errors  --show-version;;	
+    "linux_no_system_test_offline") 
+		echo "-------- compile gemoc studio for linux only no system tests, offline, install in .m2 --------"
+		mvn -o -P test_linux \ 
+            --projects !../../gemoc_studio/tests/org.eclipse.gemoc.studio.tests.system.lwb,!../../gemoc_studio/tests/org.eclipse.gemoc.studio.tests.system.mwb \
+            clean install --errors  --show-version;;	
 	"linux_offline") 
 		echo "-------- compile gemoc studio for linux only (offline) (install in .m2) --------"
-		mvn -o -P test_linux -f $HOME/src/gemoc-studio/dev_support/full_compilation/pom.xml clean install --errors  --show-version;;
-	"system_test_only") 
+		mvn -o -P test_linux clean install --errors  --show-version;;
+	"linux_system_test_only") 
 		echo "-------- running system tests only ------------"
-		mvn -f $HOME/src/gemoc-studio/gemoc_studio/tests/org.eclipse.gemoc.studio.tests.system.lwb/ clean verify --errors  --show-version
-		mvn -f $HOME/src/gemoc-studio/gemoc_studio/tests/org.eclipse.gemoc.studio.tests.system.mwb/ clean verify --errors  --show-version;;
+		mvn -P test_linux \
+            --projects ../../gemoc_studio/tests/org.eclipse.gemoc.studio.tests.system.lwb,../../gemoc_studio/tests/org.eclipse.gemoc.studio.tests.system.mwb \
+			verify --errors  --show-version;;
 	*)		
-		echo "command $1 not recognized, possible arguments: system_test_only, full, linux_offline" ;;
+		echo "command $1 not recognized, possible arguments: linux_system_test_only, linux_no_system_test, linux_no_system_test_offline, full, linux_offline" ;;
 	esac
 fi
-# set owner to default system user
-#chown 1000:1000 -R /root/src/gemoc-studio
-#chown 1000:1000 -R /root/src/gemoc-studio-execution-ale
-#chown 1000:1000 -R /root/src/gemoc-studio-execution-moccml
-#chown 1000:1000 -R /root/src/gemoc-studio-moccml
-#chown 1000:1000 -R /root/src/gemoc-studio-modeldebugging
+
