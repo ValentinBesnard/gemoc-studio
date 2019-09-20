@@ -107,7 +107,7 @@ docker-compose run gemoc_full_compilation system_test_only
 Or you can run a full build but including only the linux variant using:
 [source,bourne]
 ----
-docker run -it -v $PWD/../../../..:/home/ci/src -v $PWD/cache-m2:/home/ci/.m2 --user 1000 gemoc/gemoc-full-compilation:latest ./build_gemoc.sh linux
+docker run -it -v $PWD/../../../..:/home/jenkins/src -v $PWD/cache-m2:/home/jenkins/.m2 --user 1000 gemoc/gemoc-full-compilation:latest ./build_gemoc.sh linux
 ---- 
 or
 [source,bourne]
