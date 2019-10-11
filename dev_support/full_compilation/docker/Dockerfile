@@ -56,7 +56,12 @@ RUN apt-get install -y  --no-install-recommends \
 	maven
 
 RUN apt-get install -y  --no-install-recommends \	
-	 dbus
+	dbus
+	 
+
+RUN apt-get install -y \
+	ffmpeg \
+	tmux
 
 # some cleanup
 RUN rm -rf /var/lib/apt/lists/*
